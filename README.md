@@ -1,4 +1,38 @@
 # Bass-Diffusion-Model
+Frank Bass created the Bass diffusion model, which outlines how new items are adopted as an interaction between consumers and potential users. It is the mathematical model that describes the "s-curve" of innovation adoption. Along with the Dirichlet model of repeat buying and brand choice, it has been recognized as one of the most prominent empirical generalizations in marketing. The model is frequently used in forecasting, particularly in product and technology forecasting. The fundamental Bass diffusion equation is a Riccati equation with constant coefficients.
 
 
-## This document desc
+This equation can then be used to predict new adopters over time. That is why it is so valuable to marketers since it helps them to properly forecast future sales. One can utilize comparisons to previously launched products with comparable profiles even for new ones. Customer acquisition for new technologies and goods is based on the Bass Diffusion Model.
+
+
+## How to run the code
+```
+import BassModel
+
+model = BassModel.Bass_LSE('data.csv')
+## or
+model = BassModel.Bass_PolReg('data.csv')
+
+model.fit() # fitting the data
+model.predict() # getting the prediction
+model.plot() # plot pdf predicted pdf against the actual sales datapoints
+```
+## Different Classes Explanation
+There are two different methods that are utilized for each of these regressions.
+
+**OLS:** this method tries to to estimate the best coefficients in order to the total sum of squares of the difference between the calculated and observed values of y, is minimised. Then we try to pass those paramters back to obtain the coefficient of imitation, innovation, and the maximum number of adopters
+
+**curv_fit:** this method uses non-linear least squares in order to estimate its coefficients. However, It's Levenberg-Marquadt nonlinear fitting for unbounded problems and a trust-region variant when bounds are given. 
+
+
+## References
+
+Bass diffusion model: https://www.immagic.com/eLibrary/ARCHIVES/GENERAL/WIKIPEDI/W101203B.pdf [Accessed May 8th 2022]
+
+Helpful GitHub repos:
+
+By u/alejandropuerto https://github.com/alejandropuerto/product-market-forecasting-bass-model/blob/master/Bass%20Model.ipynb
+
+by u/Fahad021 https://github.com/Fahad021/Bass-Difussion-Modell-with-python/blob/master/Bass%20diffusion%20model.ipynb
+
+By u/NForouzandehmehr https://github.com/NForouzandehmehr/Bass-Diffusion-model-for-short-life-cycle-products-sales-prediction/blob/master/bass.py
