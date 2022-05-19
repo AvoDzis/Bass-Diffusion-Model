@@ -20,10 +20,26 @@ model.plot() # plot pdf predicted pdf against the actual sales datapoints
 ## Different Classes Explanation
 There are two different methods that are utilized for each of these regressions.
 
-**OLS:** this method tries to to estimate the best coefficients in order to the total sum of squares of the difference between the calculated and observed values of y, is minimised. Then we try to pass those paramters back to obtain the coefficient of imitation, innovation, and the maximum number of adopters
+- **OLS:** this method tries to to estimate the best coefficients in order to the total sum of squares of the difference between the calculated and observed values of y, is minimised. Then we try to pass those paramters back to obtain the coefficient of imitation, innovation, and the maximum number of adopters
 
-**curv_fit:** this method uses non-linear least squares in order to estimate its coefficients. However, It's Levenberg-Marquadt nonlinear fitting for unbounded problems and a trust-region variant when bounds are given. 
+- **curv_fit:** this method uses non-linear least squares in order to estimate its coefficients. However, It's Levenberg-Marquadt nonlinear fitting for unbounded problems and a trust-region variant when bounds are given. 
 
+## Data
+This package expects the user to have sales data with two columns set in the following order. 
+
+- **Date:** this could of couse be the daily/monthly/quarterly sales data
+
+- **Sales:** the sales that was seen in that given timeframe
+
+It goes without saying that the inserted data should reference either a file format that corresponds to CSV or XLSX
+
+## Plots
+
+This package aims to fit the given data and based on the algorithms explained above make a refression from it in order to further predict what the sales would look like. Then we try to make a plot based on the information generated
+
+- **plot():** PDF visualization of the predicted sales and actual sales. It plots the scatterplot of actual sales and regression of predicted sales
+
+- **plot_cdf():** CDF visualization of the predicted sales. It plots the regression of cumulative predicted sales
 
 ## References
 
