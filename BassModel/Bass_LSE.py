@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.formula.api as smf
 import pandas as pd
-from Bass import Bass
+from .Bass import Bass
 
 
 class Bass_LSE(Bass):

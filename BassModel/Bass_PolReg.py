@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from sklearn.metrics import mean_squared_error, r2_score
-from Bass import Bass
+from .Bass import Bass
 
 
 class Bass_PolReg(Bass):
@@ -72,6 +72,7 @@ class Bass_PolReg(Bass):
         self.p = self.popt[0] #innovation
         self.q = self.popt[1] #imitation
         self.m = self.popt[2] #max potential
+        self.perr = np.sqrt(np.diag(self.pcov))  # standard errors of p, q, m
         # print(self.innovation, self.imitation, self.maximum_potential)
         return self.p, self.q, self.m
 
@@ -89,7 +90,7 @@ class Bass_PolReg(Bass):
         scatterplot of actual sales and regression of predicted sales
         """
         plt.plot(self.time, self.sales, 'o', label='Actual Sales', color='black')
-        plt.plot(np.linspace(-1, max(self.time), 1000), self.sales_forecast, label='Sales Forecast')
+        plt.plot(np.linspace(1, len(self.time), 1000), self.sales_forecast, label='Sales Forecast')
         plt.legend(loc='best')
         plt.xlabel('Time')
         plt.ylabel('Sales')
@@ -105,7 +106,7 @@ class Bass_PolReg(Bass):
         Regression of cumulative predicted sales
         """
         self.cumsum_sales = np.cumsum(self.sales_forecast)
-        plt.plot(np.linspace(-1, max(self.time), 1000), self.cumsum_sales, label='CProb',
+        plt.plot(np.linspace(1, len(self.time), 1000), self.cumsum_sales, label='CProb',
                  color='black')
         plt.legend(loc='best')
         plt.xlabel('Time')

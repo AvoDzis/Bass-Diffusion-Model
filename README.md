@@ -1,54 +1,62 @@
-# Bass-Diffusion-Model
-Frank Bass created the Bass diffusion model, which outlines how new items are adopted as an interaction between consumers and potential users. It is the mathematical model that describes the "s-curve" of innovation adoption. Along with the Dirichlet model of repeat buying and brand choice, it has been recognized as one of the most prominent empirical generalizations in marketing. The model is frequently used in forecasting, particularly in product and technology forecasting. The fundamental Bass diffusion equation is a Riccati equation with constant coefficients.
+# Bass Diffusion Model
 
+A small Python module that fits the [Bass diffusion model](https://en.wikipedia.org/wiki/Bass_diffusion_model) to a product's sales series and plots the fitted adoption curve. I wrote it in May 2022.
 
-This equation can then be used to predict new adopters over time. That is why it is so valuable to marketers since it helps them to properly forecast future sales. One can utilize comparisons to previously launched products with comparable profiles even for new ones. Customer acquisition for new technologies and goods is based on the Bass Diffusion Model.
+The Bass model describes how a new product spreads through a market. It has three parameters:
 
+- **p**, the coefficient of innovation (people who adopt on their own)
+- **q**, the coefficient of imitation (people who adopt because others did)
+- **m**, the market potential (total number of eventual adopters)
 
-## How to run the code
+## What's in the repo
+
+| Path | What it is |
+|---|---|
+| `BassModel/Bass.py` | Base class that defines the interface: `fit`, `predict`, `plot`, `plot_cdf`, `summary` |
+| `BassModel/Bass_PolReg.py` | Fits the cumulative Bass curve with non-linear least squares (`scipy.optimize.curve_fit`, Levenberg–Marquardt) |
+| `BassModel/Bass_LSE.py` | The classic OLS approach: regresses per-period sales on cumulative sales and its square (`statsmodels`), then solves for m, p and q |
+| `data.csv` | Sample data: cumulative PlayStation 4 sales in millions of units, Aug 2014 – Jul 2021 |
+
+## How to run
+
+Requires Python 3 and the packages in `requirements.txt`.
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 ```
+
+Run this from the repo root:
+
+```python
 import BassModel
 
-model = BassModel.Bass_LSE('data.csv')
-## or
 model = BassModel.Bass_PolReg('data.csv')
-
-model.fit() # fitting the data
-model.predict() # getting the prediction
-model.plot() # plot pdf predicted pdf against the actual sales datapoints
+p, q, m = model.fit()  # innovation, imitation, market potential
+model.predict()
+model.summary()        # RMSE, R², and p/q/m with ±1 standard error
+model.plot()           # fitted curve against the actual data points
 ```
-## Different Classes Explanation
-There are two different methods that are utilized for each of these regressions.
 
-- **OLS:** this method tries to to estimate the best coefficients in order to the total sum of squares of the difference between the calculated and observed values of y, is minimised. Then we try to pass those paramters back to obtain the coefficient of imitation, innovation, and the maximum number of adopters
+On the sample data, `Bass_PolReg` estimates m ≈ 114 million units, p ≈ 0.086 and q ≈ 0.27, with R² ≈ 0.97.
 
-- **curv_fit:** this method uses non-linear least squares in order to estimate its coefficients. However, It's Levenberg-Marquadt nonlinear fitting for unbounded problems and a trust-region variant when bounds are given. 
+The input file is a CSV with no header. The second column holds the sales values. The first column (a date label) is ignored.
 
-## Data
-This package expects the user to have sales data with two columns set in the following order. 
+## Limitations
 
-- **Date:** this could of couse be the daily/monthly/quarterly sales data
-
-- **Sales:** the sales that was seen in that given timeframe
-
-It goes without saying that the inserted data should reference either a file format that corresponds to CSV or XLSX
-
-## Plots
-
-This package aims to fit the given data and based on the algorithms explained above make a refression from it in order to further predict what the sales would look like. Then we try to make a plot based on the information generated
-
-- **plot():** PDF visualization of the predicted sales and actual sales. It plots the scatterplot of actual sales and regression of predicted sales
-
-- **plot_cdf():** CDF visualization of the predicted sales. It plots the regression of cumulative predicted sales
+- **The time axis is the row number, not the date.** The sample data has uneven gaps between points (from 1 month up to 23 months), so the fitted p and q describe "per row", not "per month".
+- **The two classes expect different inputs.** `Bass_PolReg` fits the *cumulative* curve, which matches `data.csv`. `Bass_LSE` expects *per-period* sales and takes the cumulative sum itself, so on `data.csv` its estimates are meaningless (m ≈ 3,759). Use it only with per-period sales.
+- `Bass_PolReg.plot_cdf()` takes the cumulative sum of a curve that is already cumulative, so its y-axis has no real meaning.
+- There are no tests, and this isn't a packaged library (no `pip install`).
 
 ## References
 
-Bass diffusion model: https://www.immagic.com/eLibrary/ARCHIVES/GENERAL/WIKIPEDI/W101203B.pdf [Accessed May 8th 2022]
+- Bass, F. M. (1969). *A New Product Growth Model for Consumer Durables.* Management Science, 15(5), 215–227.
+- Code that helped me while writing this:
+  [alejandropuerto/product-market-forecasting-bass-model](https://github.com/alejandropuerto/product-market-forecasting-bass-model),
+  [Fahad021/Bass-Difussion-Modell-with-python](https://github.com/Fahad021/Bass-Difussion-Modell-with-python),
+  [NForouzandehmehr/Bass-Diffusion-model-for-short-life-cycle-products-sales-prediction](https://github.com/NForouzandehmehr/Bass-Diffusion-model-for-short-life-cycle-products-sales-prediction)
 
-Helpful GitHub repos:
+## License
 
-By u/alejandropuerto https://github.com/alejandropuerto/product-market-forecasting-bass-model/blob/master/Bass%20Model.ipynb
-
-by u/Fahad021 https://github.com/Fahad021/Bass-Difussion-Modell-with-python/blob/master/Bass%20diffusion%20model.ipynb
-
-By u/NForouzandehmehr https://github.com/NForouzandehmehr/Bass-Diffusion-model-for-short-life-cycle-products-sales-prediction/blob/master/bass.py
+No license. All rights reserved.
